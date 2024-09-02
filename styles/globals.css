@@ -1,5 +1,7 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight:lighter;
+    letter-spacing: 0.15rem;
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
@@ -9,21 +11,35 @@ body {
     height: 100vh;
   }
   
-  div {
-    text-align: center;
-  }
+ 
   
   input {
-    padding: 8px;
-    margin-top: 10px;
+    padding: 2.8%;
+    margin-top: 3%;
+    
+  }
+
+  .correct{
+    border-color: limegreen;
+    background-color: limegreen;
+    border-radius: 5%;    
+
+
+  }
+
+  .incorrect{
+    border-color: red;
+    background-color: red;
+    border-radius: 5%;    
   }
   
   button {
     padding: 8px;
     margin-left: 5px;
   }
-  
-  p {
-    font-weight: bold;
+  div{
+    margin-left: 6%;
+    padding: 15%;
+    width: 40%;
   }
   

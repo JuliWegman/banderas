@@ -1,64 +1,78 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-
+import Image from 'next/image'
+import { clearInterval } from 'timers';
 function Juego() {
   const [paises, setPaises] = useState([]);
   const [paisSeleccionado, setPaisSeleccionado] = useState(null);
   const [puntos, setPuntos] = useState(0);
   const [respuesta, setRespuesta] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [tiempo,setTiempo]= useState(15)
 
   useEffect(() => {
-    async function obtenerPaises() {
+    async function getBanderas() {
       try {
-        const respuesta = await fetch('https://countriesnow.space/api/v0.1/countries/flag/images');
-        const data = await respuesta.json();
-        setPaises(data.data);
-        seleccionarPaisAleatorio(data.data);
+        const res = await fetch('https://countriesnow.space/api/v0.1/countries/flag/images');
+        const {data} = await res.json();
+        setPaises(data);
+        randomBandera(data);
       } catch (error) {
-        console.error('Error al obtener los países:', error);
+        console.error('ERROR', error);
       }
     }
 
-    obtenerPaises();
+    getBanderas();
+    
   }, []);
 
-  const seleccionarPaisAleatorio = (paises) => {
+  const randomBandera = (paises) => {
     const randomIndex = Math.floor(Math.random() * paises.length);
     setPaisSeleccionado(paises[randomIndex]);
   };
 
-  const manejarCambio = (e) => {
+  const handleCambio = (e) => {
     setRespuesta(e.target.value);
   };
 
-  const manejarEnvio = (e) => {
+  const handleEnvio = (e) => {
+    clearTimeout(idTimer)
+    clearInterval(idContador)
+    const input = document.getElementById("cont");
+
     e.preventDefault();
     if (respuesta.trim().toLowerCase() === paisSeleccionado.name.toLowerCase()) {
       setPuntos(puntos + 10);
+      input.className="correct"
       setMensaje('¡Correcto!');
     } else {
       setPuntos(puntos - 1);
+      input.className="incorrect"
       setMensaje(`Incorrecto. Era ${paisSeleccionado.name}.`);
     }
-    seleccionarPaisAleatorio(paises);
-    setRespuesta('');
+    setTimeout(()=>{input.className="contenedor";Inicio()},750)
+    
   };
+
+  const Inicio=()=>{
+    setMensaje(``);
+    randomBandera(paises);
+    setRespuesta('');
+     idTimer=setTimeout(handleEnvio,15000)
+    idContador=setInterval(setTiempo(tiempo-1),1000)
+  }
 
   if (!paisSeleccionado) return <div>Cargando...</div>;
 
   return (
-    <div>
-      <h1>Adivina el País</h1>
-      <img src={paisSeleccionado.flag} alt="Bandera" style={{ width: '200px', height: 'auto' }} />
-      <form onSubmit={manejarEnvio}>
-        <input
-          type="text"
-          value={respuesta}
-          onChange={manejarCambio}
-          placeholder="Escribe el nombre del país"
-        />
+    
+    <div className='contenedor' id='cont'>
+      <h2>¡Adivina la bandera!</h2>
+      <p>{tiempo}</p>
+      <Image src={paisSeleccionado.flag} alt="Bandera"  width={250} height={150} />
+      <form onSubmit={handleEnvio}>
+        <input id='input' type="text" value={respuesta} onChange={handleCambio} placeholder="País de la bandera"/>
         <button type="submit">Enviar</button>
       </form>
       <p>Puntos: {puntos}</p>
