@@ -1,8 +1,8 @@
 "use client";
-
 import { useState, useEffect } from 'react';
 import Image from 'next/image'
-import { clearInterval } from 'timers';
+
+
 function Juego() {
   const [paises, setPaises] = useState([]);
   const [paisSeleccionado, setPaisSeleccionado] = useState(null);
@@ -10,13 +10,14 @@ function Juego() {
   const [respuesta, setRespuesta] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [tiempo,setTiempo]= useState(15)
-
+  
   useEffect(() => {
     async function getBanderas() {
       try {
         const res = await fetch('https://countriesnow.space/api/v0.1/countries/flag/images');
         const {data} = await res.json();
         setPaises(data);
+        
         randomBandera(data);
       } catch (error) {
         console.error('ERROR', error);
@@ -37,8 +38,7 @@ function Juego() {
   };
 
   const handleEnvio = (e) => {
-    clearTimeout(idTimer)
-    clearInterval(idContador)
+
     const input = document.getElementById("cont");
 
     e.preventDefault();
@@ -49,9 +49,9 @@ function Juego() {
     } else {
       setPuntos(puntos - 1);
       input.className="incorrect"
-      setMensaje(`Incorrecto. Era ${paisSeleccionado.name}.`);
+      setMensaje(`Incorrecto, el nombre era ${paisSeleccionado.name}.`);
     }
-    setTimeout(()=>{input.className="contenedor";Inicio()},750)
+    setTimeout(()=>{input.className="contenedor";Inicio()},1200)
     
   };
 
@@ -59,8 +59,7 @@ function Juego() {
     setMensaje(``);
     randomBandera(paises);
     setRespuesta('');
-     idTimer=setTimeout(handleEnvio,15000)
-    idContador=setInterval(setTiempo(tiempo-1),1000)
+      
   }
 
   if (!paisSeleccionado) return <div>Cargando...</div>;

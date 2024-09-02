@@ -23,6 +23,7 @@ body {
     border-color: limegreen;
     background-color: limegreen;
     border-radius: 5%;    
+    color: whitesmoke;
 
 
   }
@@ -31,6 +32,8 @@ body {
     border-color: red;
     background-color: red;
     border-radius: 5%;    
+    color: whitesmoke;
+
   }
   
   button {
