@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Image from 'next/image'
+import { setTimeout } from 'timers';
 
 
 function Juego() {
@@ -9,15 +10,13 @@ function Juego() {
   const [puntos, setPuntos] = useState(0);
   const [respuesta, setRespuesta] = useState('');
   const [mensaje, setMensaje] = useState('');
-  const [tiempo,setTiempo]= useState(15)
-  
+
   useEffect(() => {
     async function getBanderas() {
       try {
         const res = await fetch('https://countriesnow.space/api/v0.1/countries/flag/images');
         const {data} = await res.json();
         setPaises(data);
-        
         randomBandera(data);
       } catch (error) {
         console.error('ERROR', error);
@@ -40,26 +39,33 @@ function Juego() {
   const handleEnvio = (e) => {
 
     const input = document.getElementById("cont");
-
-    e.preventDefault();
+    const resp = document.getElementById("texto");
+    if (e!=null) {
+      e.preventDefault();
+    }
     if (respuesta.trim().toLowerCase() === paisSeleccionado.name.toLowerCase()) {
       setPuntos(puntos + 10);
       input.className="correct"
-      setMensaje('¡Correcto!');
+      setMensaje('¡Correcto');
     } else {
       setPuntos(puntos - 1);
       input.className="incorrect"
-      setMensaje(`Incorrecto, el nombre era ${paisSeleccionado.name}.`);
+      setMensaje(`¡${paisSeleccionado.name}`);
     }
-    setTimeout(()=>{input.className="contenedor";Inicio()},1200)
+    resp.className="a";
+    setTimeout(()=>{
+      resp.className="invi";
+      input.className="contenedor";
+      Inicio()
+    },1200)
     
   };
 
   const Inicio=()=>{
+
     setMensaje(``);
     randomBandera(paises);
     setRespuesta('');
-      
   }
 
   if (!paisSeleccionado) return <div>Cargando...</div>;
@@ -68,14 +74,13 @@ function Juego() {
     
     <div className='contenedor' id='cont'>
       <h2>¡Adivina la bandera!</h2>
-      <p>{tiempo}</p>
       <Image src={paisSeleccionado.flag} alt="Bandera"  width={250} height={150} />
       <form onSubmit={handleEnvio}>
         <input id='input' type="text" value={respuesta} onChange={handleCambio} placeholder="País de la bandera"/>
         <button type="submit">Enviar</button>
       </form>
       <p>Puntos: {puntos}</p>
-      <p>{mensaje}</p>
+      <p id='texto' className='invi'>{mensaje}!</p>
     </div>
   );
 }
